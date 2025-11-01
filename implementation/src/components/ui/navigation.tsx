@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "./button";
+import { ThemeToggle } from "./theme-toggle"; // Import ThemeToggle
 import {
   Home,
   Heart,
@@ -15,6 +16,7 @@ import {
   Menu,
   X,
   AlertTriangle,
+  Shield,
 } from "lucide-react";
 
 const navigationItems = [
@@ -39,14 +41,20 @@ const navigationItems = [
     icon: Brain,
   },
   {
-    name: "Voice Journal",
+    name: "Journal",
     href: "/dashboard/journal",
     icon: Mic,
   },
   {
-    name: "Profile",
-    href: "/profile",
-    icon: User,
+    name: "AI Chat",
+    href: "/dashboard/ai",
+    icon: Brain,
+  },
+  {
+    name: "Crisis Support",
+    href: "/dashboard/crisis",
+    icon: AlertTriangle, // Changed icon
+    isEmergency: true, // Add flag
   },
 ];
 
@@ -61,17 +69,23 @@ export function Navigation({ className }: NavigationProps) {
   return (
     <>
       {/* Desktop Navigation */}
-      <nav className={cn("hidden md:flex items-center space-x-6", className)}>
+      <nav className={cn("hidden md:flex items-center space-x-2 flex-shrink-0", className)}>
         {navigationItems.map((item) => {
           const isActive = pathname === item.href;
+          const isEmergency = item.isEmergency;
+          
           return (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
-                "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                "flex items-center space-x-2 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap",
                 isActive
-                  ? "bg-primary text-primary-foreground"
+                  ? isEmergency
+                    ? "bg-destructive text-destructive-foreground"
+                    : "bg-primary text-primary-foreground"
+                  : isEmergency
+                  ? "text-destructive hover:bg-destructive/10"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted"
               )}
             >
@@ -108,7 +122,7 @@ export function Navigation({ className }: NavigationProps) {
                     key={item.name}
                     href={item.href}
                     className={cn(
-                      "flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+                      "flex items-center space-x-3 px-3 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap",
                       isActive
                         ? "bg-primary text-primary-foreground"
                         : "text-muted-foreground hover:text-foreground hover:bg-muted"
@@ -149,6 +163,7 @@ export function Header({ title = "SereneMind", children }: HeaderProps) {
         <div className="flex flex-1 items-center justify-end space-x-4">
           <Navigation />
           {children}
+          <ThemeToggle /> {/* Add ThemeToggle here */}
           <Button variant="destructive" size="sm" className="hidden md:flex">
             <AlertTriangle className="h-4 w-4 mr-2" />
             Crisis Support
